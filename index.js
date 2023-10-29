@@ -91,6 +91,7 @@ async function downloadLinksRecursively(pageUrl, depth, initialHostname) {
 const uniqueTags = new Set();
 let div_counter = 0;
 let math_ml_used = false;
+let social_media_tag = false;
 
 // Recursive function to read and parse HTML files
 async function parseHTMLFiles(directory) {
@@ -113,6 +114,15 @@ async function parseHTMLFiles(directory) {
         }
         if (element.name === "math") {
           math_ml_used = true;
+        }
+        if (element.name === "meta" && element.attribs["property"]) {
+          social_media_tag = true;
+        } else if (
+          element.name === "meta" &&
+          element.attribs["name"] &&
+          element.attribs["name"] != "viewport"
+        ) {
+          social_media_tag = true;
         }
       });
     }
@@ -149,6 +159,12 @@ function compareLists(neededStrings, userInput) {
     console.log(`MathML has been used!`);
   } else {
     console.log(`MathML has not been used!`);
+  }
+
+  if (social_media_tag) {
+    console.log(`Meta tags for social media have been used!`);
+  } else {
+    console.log(`Meta tags for social media have not been used!`);
   }
 }
 
