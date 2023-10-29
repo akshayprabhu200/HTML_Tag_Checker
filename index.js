@@ -90,6 +90,7 @@ async function downloadLinksRecursively(pageUrl, depth, initialHostname) {
 
 const uniqueTags = new Set();
 let div_counter = 0;
+let math_ml_used = false;
 
 // Recursive function to read and parse HTML files
 async function parseHTMLFiles(directory) {
@@ -109,6 +110,9 @@ async function parseHTMLFiles(directory) {
         if (element.attribs["style"]) {
           styleValue = element.attribs["style"];
           console.log(`Found a style tag: ${styleValue}`);
+        }
+        if (element.name === "math") {
+          math_ml_used = true;
         }
       });
     }
@@ -137,7 +141,14 @@ function compareLists(neededStrings, userInput) {
   console.log(`Total Number of div tags: ${div_counter}`);
 
   if (totalMissing > 0) {
-    console.log(`Missing strings: ${missingStrings.join(", ")}`);
+    console.log(`Missing tags: ${missingStrings.join(", ")}`);
+    console.log(`Deduct ${totalMissing * 2} points`);
+  }
+
+  if (math_ml_used) {
+    console.log(`MathML has been used!`);
+  } else {
+    console.log(`MathML has not been used!`);
   }
 }
 
