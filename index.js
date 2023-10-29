@@ -89,6 +89,7 @@ async function downloadLinksRecursively(pageUrl, depth, initialHostname) {
 }
 
 const uniqueTags = new Set();
+let div_counter = 0;
 
 // Recursive function to read and parse HTML files
 async function parseHTMLFiles(directory) {
@@ -102,6 +103,13 @@ async function parseHTMLFiles(directory) {
       const $ = cheerio.load(content);
       $("*").each((index, element) => {
         uniqueTags.add(element.name);
+        if (element.name === "div") {
+          div_counter += 1;
+        }
+        if (element.attribs["style"]) {
+          styleValue = element.attribs["style"];
+          console.log(`Found a style tag: ${styleValue}`);
+        }
       });
     }
   });
@@ -126,6 +134,7 @@ function compareLists(neededStrings, userInput) {
   console.log(`Total needed strings: ${totalNeeded}`);
   console.log(`Total present strings: ${totalPresent}`);
   console.log(`Total missing strings: ${totalMissing}`);
+  console.log(`Total Number of div tags: ${div_counter}`);
 
   if (totalMissing > 0) {
     console.log(`Missing strings: ${missingStrings.join(", ")}`);
