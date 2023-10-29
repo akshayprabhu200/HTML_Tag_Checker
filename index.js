@@ -7,6 +7,8 @@ const url = require("url");
 // Function to download a file (if it doesn't exist)
 async function downloadFile(fileUrl, filePath) {
   if (!fs.existsSync(filePath)) {
+    console.log(`Filepath is ${filePath}`);
+    filePath = `${filePath}.html`;
     try {
       const response = await axios.get(fileUrl, {
         responseType: "arraybuffer",
@@ -14,6 +16,7 @@ async function downloadFile(fileUrl, filePath) {
 
       if (response.status === 200) {
         fs.writeFileSync(filePath, response.data);
+        console.log(response.data);
         console.log(`Downloaded: ${filePath}`);
       } else {
         console.error(
@@ -46,6 +49,7 @@ async function getLinksFromPage(pageUrl) {
 
 // Recursive function to download links
 async function downloadLinksRecursively(pageUrl, depth, initialHostname) {
+  console.log("Recursive Download Call");
   if (depth === 0) {
     return;
   }
@@ -63,7 +67,7 @@ async function downloadLinksRecursively(pageUrl, depth, initialHostname) {
   }
 
   const links = await getLinksFromPage(pageUrl);
-
+  links.push(pageUrl);
   for (const link of links) {
     const parsedUrl = new URL(link);
     const hostName = parsedUrl.hostname;
@@ -72,8 +76,6 @@ async function downloadLinksRecursively(pageUrl, depth, initialHostname) {
       hostName,
       parsedUrl.pathname.replace(/[^a-zA-Z0-9]/g, "_")
     );
-
-    console.log(filePath);
 
     if (hostName === initialHostname) {
       if (!fs.existsSync(filePath)) {

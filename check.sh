@@ -13,7 +13,7 @@ filepath=$(echo "$1" | sed 's/https:\/\/\(.*\)/\1/')
 npm run check "$1"
 
 # Step 2: Call npm run validate with the extracted filepath and "_"
-cd "$filepath"
-find . -type f -exec mv '{}' '{}'.html \;
+# cd $filepath || { echo "unable to cd into $filepath" > &2; exit 1 }
+# find . -type f -exec mv '{}' '{}'.html \;
 
 npm run validate "$filepath"
